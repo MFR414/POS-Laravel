@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TransactionDetail extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = "transaction_details";
     
@@ -23,5 +24,36 @@ class TransactionDetail extends Model
         'item_quantity_unit',
         'item_price',
         'item_total_price',
+        'disc_percent'
     ];
+
+    /**
+     * The attributes that should be appended to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'formatted_item_price',
+        'formatted_item_total_price',
+    ];
+
+    /**
+     * Get the formatted item_price attribute.
+     *
+     * @return string
+     */
+    public function getFormattedItemPriceAttribute()
+    { 
+        return 'Rp '.number_format($this->item_price, 0, '.', ',');
+    }
+
+    /**
+     * Get the formatted item_total_price attribute.
+     *
+     * @return string
+     */
+    public function getFormattedItemTotalPriceAttribute()
+    {
+        return number_format($this->item_total_price, 0, ',', '.');
+    }
 }

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Application\Web\Transaction;
 
 use App\Http\Controllers\Controller;
-use App\Models\TransactionDetail;
 use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use App\Services\TransactionServices;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -63,72 +63,15 @@ class TransactionController extends Controller
             'customer_name' => 'required',
         ];
 
+        // dd($request->all());
+
         $this->validate($request,$validation_rules);
-
-        $items = json_decode($request->items);
+        $transaction = new TransactionServices;
+        $transaction = $transaction->saveTransaction($request);
         
-        $transaction = DB::transaction(function () use ($request,$items){
-            // declare new TransactionServices
-            $transactionServices = new TransactionServices();
-
-            // check items is exist before execute process
-            if(count($items) != 0){
-
-                // declare variable
-                $discount_percentage = 0;
-                $discount_total = 0;
-                $subtotal = 0;
-                $discount_percentage = 0;
-                
-                // Create new transaction object
-                $transaction = Transaction::where('transaction_number',$request->transaction_number)->first();
-
-                if(empty($transaction)){
-                    $transaction = new Transaction();
-                }
-                
-                $transaction->transaction_date = $request->transaction_date;
-                $transaction->transaction_number = $request->transaction_number;
-                $transaction->sales_code = $request->sales_code;
-                $transaction->customer_name = $request->customer_name;
-                $transaction->customer_address = $request->customer_address;
-                $transaction->item_total = count($items);
-                
-                foreach($items as $item){
-                    
-                    // Save every items in the transaction to db
-                    $transactionDetail = new TransactionDetail();
-                    $transactionDetail->transaction_number = $request->transaction_number;
-                    $transactionDetail->item_code = $item->item_code;
-                    $transactionDetail->item_name = $item->item_name;
-                    $transactionDetail->item_quantity = $item->item_quantity;
-                    $transactionDetail->item_quantity_unit = $item->item_quantity_unit;
-                    $transactionDetail->item_price = $item->item_price;
-                    $transactionDetail->item_total_price = $item->item_price;
-                    
-                    $discount_percentage += $item->disc_percent;                    
-                    $discount_total += ($item->disc_percent * $item->item_total_price / 100);
-                    $subtotal += ($item->item_quantity * $item->item_total_price);
-                    
-                    $transactionDetail->save();
-                }
-                
-                // dd($items);
-                
-                $transaction->discount_total = $transactionServices->customRound($discount_total);
-                $transaction->discount_percentage = $discount_percentage;
-                $transaction->subtotal = $transactionServices->customRound($subtotal);
-                $transaction->final_total = $transactionServices->customRound($subtotal - $discount_total);
-                $transaction->is_paid = false;
-
-                $transaction->save(); 
-
-                return $transaction;
-            }
-        });
 
         return redirect()
-        ->route('application.transactions.index')
+        ->route('application.transactions.payment.form', $transaction->id)
         ->with('success_message', 'Berhasil menambahkan transaksi '.$transaction->transaction_number.' !');
 
     }
@@ -146,7 +89,22 @@ class TransactionController extends Controller
      */
     public function edit(string $id)
     {
-        abort(404);
+        $transaction = Transaction::where('id',$id)->first();
+        if(empty($transaction)){
+            return redirect()->back()->with('error_message', 'Transaksi tidak ditemukan, silahkan coba kembali beberapa saat atau hubungi admin !');
+        } else {
+            // Format transaction_date attribute to Y-m-d
+            $formatted_date_input = Carbon::parse($transaction->transaction_date)->format('Y-m-d');
+            $transaction->formatted_transaction_date_input = $formatted_date_input;
+            $items = TransactionDetail::where('transaction_number',$transaction->transaction_number)->get();
+        }
+
+        // dd($transaction);
+        return view('application.transaction.edit',[
+            'active_page' => 'transactions',
+            'transaction' => $transaction,
+            'items' => json_encode($items) //encode items to JSON
+        ]);
     }
 
     /**
@@ -154,7 +112,27 @@ class TransactionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        abort(404);
+         // Validate
+         $validation_rules = [
+            'customer_name' => 'required',
+        ];
+
+        $this->validate($request,$validation_rules);
+
+        // dd($request->all()); 
+
+        $checkTransaction = Transaction::find($id);
+        if($checkTransaction->transaction_status == 'Belum Dibayar' && !empty($checkTransaction)){
+            $transaction = new TransactionServices;
+            $transaction = $transaction->updateTransaction($request);
+            // dd($transaction);
+        } else {
+            return redirect()->back()->with('error_message', 'Transaksi tidak ditemukan, silahkan coba kembali beberapa saat atau hubungi admin !');
+        }
+
+        return redirect()
+        ->route('application.transactions.index')
+        ->with('success_message', 'Berhasil merubah transaksi '.$transaction->transaction_number.' !');
     }
 
     /**
@@ -171,10 +149,56 @@ class TransactionController extends Controller
      */
     public function showPaymentForm(string $id){
         $transaction = Transaction::find($id);
+        $transaction->details = TransactionDetail::where('transaction_number',$transaction->transaction_number)->get();
 
         return view('application.transaction.payment',[
-            'active_page' => 'transactions-create',
+            'active_page' => 'transactions',
             'transaction' => $transaction
         ]);
+    }
+
+    /**
+     * submit the payment
+     */
+
+    public function submitPayment(Request $request){
+        // Validate
+        $validation_rules = [
+            'transaction_number' => 'required',
+            'payment_type' => 'required',
+            'cash' => 'required_if:payment_type,cash',
+        ];
+
+        $response = [
+			'success' => 'false',
+			'message' => '', 
+		];
+
+        $this->validate($request,$validation_rules);
+
+        $transaction = Transaction::where('transaction_number',$request->transaction_number)->first();
+        if(empty($transaction)){
+            $response['success'] = 'false';
+            $response['message'] = 'Maaf, kami tidak menemukan transaksi tersebut. Mohon coba beberapa saat lagi. Jika kesalahan masih berlanjut, silakan hubungi administrator kami.';
+        } else { 
+            $transactionServices = new TransactionServices();
+            $payment = $transactionServices->updateTransactionAfterpayment($request,$transaction);
+
+            if(!empty($payment)){
+                $response['success'] = 'true';
+                $response['message'] = 'Transaksi '.$transaction->transaction_number.' telah dibayar. terima kasih';
+            }
+        }
+
+        if($payment['success'] == 'true') {
+            return redirect()
+            ->route('application.transactions.index')
+            ->with('success_message', $payment['message']);
+        } else {
+            return redirect()
+            ->route('application.transactions.index')
+            ->with('error_message', $payment['message']);
+        }
+
     }
 }

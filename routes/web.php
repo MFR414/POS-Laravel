@@ -27,5 +27,11 @@ Route::middleware('auth')->prefix('application')->name('application.')->group(fu
     
     //transaction route
     require_once(__DIR__ . '/web/application/transaction.php');
+
+    //invoice route
+    require_once(__DIR__ . '/web/application/invoice.php');
+
+    //report route
+    require_once(__DIR__ . '/web/application/report.php');
 });
 

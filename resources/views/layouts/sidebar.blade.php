@@ -53,7 +53,13 @@
                       <i class="nav-icon fas fa-balance-scale"></i>
                       <p>Transaksi</p>
                   </a>
-              </li>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('application.reports.index') }}" class="nav-link {{ ( !empty($active_page) && $active_page == 'reports') ? 'active' : '' }}"">
+                    <i class="nav-icon fa fa-list"></i>
+                    <p>Laporan</p>
+                  </a>
+                </li>
                 <li class="nav-item {{ ( !empty($active_page) && $active_page == 'users') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ ( !empty($active_page) && $active_page == 'users') ? 'active' : '' }}"">
                         <i class="nav-icon fa fa-list"></i><p>Daftar Pengguna</p>

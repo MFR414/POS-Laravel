@@ -7,7 +7,7 @@
     <section>
         <div class="d-flex d-flex d-flex justify-content-between align-items-center p-2">
             <div class="title">
-                <h2>Buat Transaksi</h2>
+                <h2>Pembayaran Transaksi {{ $transaction->transaction_number }}</h2>
             </div>
         </div>
     </section>
@@ -17,7 +17,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb" style="margin-bottom: 0px !important;">
                     <li class="breadcrumb-item"><a href="{{ route('application.dashboard') }}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Buat Transaksi</li>
+                    <li class="breadcrumb-item"><a href="{{ route('application.transactions.index') }}">Transaksi</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Pembayaran Transaksi {{ $transaction->transaction_number }}</li>
                 </ol>
             </nav>
             </div>
@@ -27,139 +28,104 @@
     <div class="main-container">
         <section class="section">
             <div class="row">
-                <div class="col-12 d-flex">
-                    <div class="col-6">
-                            <form action="{{ route('application.transactions.store') }}" method="POST" style="margin-bottom: 0" id="transactionForm">
-                                {{ csrf_field() }}
+                <div class="col-12">
+                    <div class="container" id="container-info">
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="card-title-body">
-                                            <h3 class="title">Data Transaksi</h3>
+                                            <h3 class="title">Informasi Transaksi</h3>
                                         </div>
-                                        <section>
-                                            <input type="hidden" name="items" id="itemsArr">
-                                            <input type="hidden" name="dp_po">
-                                            <div class="row">
-                                                <div class="col-12 mb-1">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Nomor Transaksi</label>
-                                                        <input type="text" class="form-control boxed" name="transaction_number" value="{{ $transaction_number }}" placeholder="Masukkan Kode Sales Admin" readonly="readonly">
-                                                        @error('transaction_number')
-                                                            <span class="has-error">
-                                                                {{ $message }}
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 mb-1">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Tanggal Transaksi</label>
-                                                        <input type="date" class="form-control boxed" id='transaction_date' name="transaction_date" value="{{ $transaction_date }}" readonly="readonly">
-                                                        @error('transaction_date')
-                                                            <span class="has-error">
-                                                                {{ $message }}
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 mb-1">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Kode Sales</label>
-                                                        <input type="text" class="form-control boxed" name="sales_code" value="{{ old('sales_code') }}" placeholder="Masukkan Kode Sales Admin">
-                                                        @error('sales_code')
-                                                            <span class="has-error">
-                                                                {{ $message }}
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 mb-1">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Nama Pelanggan <sup style='color: red'>*</sup></label>
-                                                        <input type="text" class="form-control underlined" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" placeholder="Masukkan Nama Pelanggan" required>
-                                                        @error('customer_name')
-                                                            <span class="has-error">
-                                                                {{ $message }}
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12 col-md-12 mb-1">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Alamat Pelanggan </label>
-                                                        <input type="text" class="form-control underlined" name="customer_address" value="{{ old('customer_address') }}" placeholder="Masukkan Alamat Pelanggan">
-                                                        @error('customer_address')
-                                                            <span class="has-error">
-                                                                {{ $message }}
-                                                            </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <section>  
+                                            <table class="table table-responsive-md table-sm table-borderless">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>No. Transaksi</td>
+                                                        <td>:</td>
+                                                        <td id="transaction_number"> {{$transaction->transaction_number}}</td>
+                                                        <td>Tgl Transaksi</td>
+                                                        <td>:</td>
+                                                        <td id="customer_name"> {{$transaction->formatted_transaction_date}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Kode Sales</td>
+                                                        <td>:</td>
+                                                        <td id="transaction_number"> {{$transaction->sales_code}}</td>
+                                                        <td>Nama Pelanggan</td>
+                                                        <td>:</td>
+                                                        <td id="customer_name"> {{$transaction->customer_name}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jml Item</td>
+                                                        <td>:</td>
+                                                        <td id="total_items">{{$transaction->item_total}}</td>
+                                                        <td>Sub Total</td>
+                                                        <td>:</td>
+                                                        <td id="sub_total_price">{{$transaction->formatted_subtotal}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Potongan</td>
+                                                        <td>:</td>
+                                                        <td id="total_disc_amount">{{$transaction->formatted_discount_total}}</td>
+                                                        <td>Total</td>
+                                                        <td>:</td>
+                                                        <td id="total_price">{{$transaction->formatted_final_total}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </section>
                                     </div>
                                 </div>
-                            </form>
-                    </div>
-                    <div class="col-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-title-body">
-                                    <h3 class="title">Input Data Item</h3>
-                                </div>
-                                <section>
-                                    <div class="row">
-                                        <div class="col-12 mb-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Kode Item</label>
-                                                <input type="text" class="form-control boxed" name="item_code" id="item_code" placeholder="Masukkan Kode Item">
-                                            </div>
+                            </div>
+                            <div class="col-lg-5 col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-title-body">
+                                            <h3 class="title">List Item</h3>
                                         </div>
-                                        <div class="col-12 mb-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Nama Item <sup style='color: red'>*</sup></label>
-                                                <input type="text" class="form-control underlined" name="item_name" id="item_name" placeholder="Masukkan Nama item">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-12 mb-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Jumlah Item <sup style='color: red'>*</sup></label>
-                                                <input type="text" class="form-control underlined" name="item_quantity" id="item_quantity" placeholder="Masukkan Jumlah item" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-12 mb-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Satuan Item <sup style='color: red'>*</sup></label>
-                                                <select class="form-control" name="item_quantity_unit" id="item_quantity_unit" required>
-                                                    <option value="" selected> Pilih Salah Satu </option>
-                                                    <option value="Meter">Meter</option>
-                                                    <option value="Pcs">Pcs</option>
-                                                </select>
-                                                {{-- <input type="text" class="form-control underlined" name="item_quantity_unit" id="item_quantity_unit" placeholder="Masukkan Satuan item" required> --}}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-12 mb-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Harga Item Per Satuan<sup style='color: red'>*</sup></label>
-                                                <input type="text" class="form-control underlined" name="item_price_formatted" id="item_price_formatted" placeholder="Masukkan Harga item per satuan" required>
-                                                <input type="hidden" name="item_price" id="item_price">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-12 mb-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Potongan Harga (%)</label>
-                                                <input type="number" class="form-control underlined" name="disc_percent" id="disc_percent" placeholder="Masukkan Potongan Harga (%)">
-                                                <input type="hidden" name="item_price" id="item_price">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-12 mt-3">
-                                            <div class="form-group">
-                                                <a class="btn btn-primary" style="width: 100%;" onclick="addItem()">Simpan Item</a>
-                                            </div>
+                                        <div>
+                                            <table class="table table-sm table-striped table-responsive-md center" style="overflow-x: auto;" id="items_table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 1%">
+                                                            No
+                                                        </th>
+                                                        <th>
+                                                            Nama Item
+                                                        </th>
+                                                        <th>
+                                                            Qty Item
+                                                        </th>
+                                                        <th>
+                                                            Total
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (!empty($transaction->details))
+                                                        @foreach ($transaction->details as $item )
+                                                            <tr>
+                                                                <td>
+                                                                    {{ $loop->iteration }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ $item->item_code }} - {{ $item->item_name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ $item->item_quantity }}
+                                                                </td>
+                                                                <td id="item_price">
+                                                                    {{ $item->formatted_item_price }}
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                </section>
-
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -167,68 +133,141 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title-body">
-                                <h3 class="title">List Item</h3>
-                            </div>
-                            <div>
-                                <table class="table table-striped table-responsive center" style="overflow-x: auto;" id="items_table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 1%">
-                                                No
-                                            </th>
-                                            <th>
-                                                Kode Item
-                                            </th>
-                                            <th>
-                                                Nama Item
-                                            </th>
-                                            <th>
-                                                Jumlah Satuan Item
-                                            </th>
-                                            <th>
-                                                Potongan (%)
-                                            </th>
-                                            <th>
-                                                Harga Item
-                                            </th>
-                                            <th>
-                                                Total
-                                            </th>
-                                            <th>
-                                                Opsi
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td></td>
-                                            <td colspan="2" style="text-align: right !important;">Jml Item</td>
-                                            <td colspan="2" id="total_items"></td>
-                                            <td style="text-align: right !important;">Sub Total</td>
-                                            <td id="sub_total_price"></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td colspan="2" style="text-align: right !important;">Potongan</td>
-                                            <td id="total_disc_percent"></td>
-                                            <td id="total_disc_amount"></td>
-                                            <td style="text-align: right !important;">Total</td>
-                                            <td id="total_price"></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                            <br>
-                            <div class="col-sm-12 col-md-12 mt-3">
-                                <div class="form-group">
-                                    <button class="btn btn-primary" style="width: 100%;" id="submitTransactionButton">Berikutnya</button>
+                            <form action="{{ route('application.transactions.payment.submit', $transaction) }}" method="POST" style="margin-bottom: 0" id="transactionForm">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="transaction_number" value="{{ $transaction->transaction_number }}">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-title-body">
+                                            <h3 class="title">Data Transaksi</h3>
+                                        </div>
+                                        <section>
+                                            <div class="row">
+                                                <div class="col-12 mb-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="payment_type">Nomor Transaksi</label>
+                                                        <select class="form-control" name="payment_type" id="payment_type" required>
+                                                            {{-- <option value=""> Pilih Salah Satu </option> --}}
+                                                            <option value="Cash" selected>Tunai</option>
+                                                            {{-- <option value="Credit">Kredit</option> --}}
+                                                        </select>
+                                                        @error('payment_type')
+                                                            <span class="has-error">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 " name="payment_form_cash" id="payment_form_cash">
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12 mb-1">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="tax_percentage">Jumlah Kena Pajak (%)</label>
+                                                                <input type="number" class="form-control underlined" name="tax_percentage" id="tax_percentage" placeholder="Masukkan Jumlah Kena Pajak (%)">
+                                                                @error('tax_percentage')
+                                                                    <span class="has-error">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12 mb-1">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="tax_total_formatted">Jumlah Kena Pajak (RP)</label>
+                                                                <input type="text" class="form-control underlined" name="tax_total_formatted" id="tax_total_formatted" placeholder="Masukkan Jumlah Kena Pajak (%) terlebih dahulu" readonly>
+                                                                <input type="hidden" name="tax_total" id="tax_total">
+                                                                @error('tax_total_formatted')
+                                                                    <span class="has-error">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12 mb-1">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="other_fees_formatted">Biaya Lainnya</label>
+                                                                <input type="text" class="form-control underlined" name="other_fees_formatted" id="other_fees_formatted" placeholder="Masukkan jumlah biaya lainnya">
+                                                                <input type="hidden" name="other_fees" id="other_fees">
+                                                                @error('other_fees_formatted')
+                                                                    <span class="has-error">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12 mb-1">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="dp_po_formatted">Jumlah DP PO</label>
+                                                                <input type="text" class="form-control underlined" name="dp_po_formatted" id="dp_po_formatted" placeholder="Masukkan Jumlah DP PO" value="{{ old('dp_po')}}">
+                                                                <input type="hidden" name="dp_po" id="dp_po" value="{{old('dp_po')}}">
+                                                                @error('dp_po_formatted')
+                                                                    <span class="has-error">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12 mb-1">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="final_after_tax_total_formatted">Jumlah total setelah pajak dan biaya lainnya</label>
+                                                                <input type="text" class="form-control underlined" name="final_after_tax_total_formatted" id="final_after_tax_total_formatted" placeholder="Masukkan jumlah kena pajak (%) dan biaya lainnya terlebih dahulu" readonly>
+                                                                <input type="hidden" name="final_after_tax_total" id="final_after_tax_total" value="{{old('final_after_tax_total')}}">
+                                                                @error('final_after_tax_total_formatted')
+                                                                    <span class="has-error">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 mb-1">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="cash_formatted">Jumlah Pembayaran</label>
+                                                                <input type="text" class="form-control underlined" name="cash_formatted" id="cash_formatted" placeholder="Masukkan Jumlah Pembayaran" value="{{ old('cash')}}">
+                                                                <input type="hidden" name="cash" id="cash" value="{{old('cash')}}">
+                                                                @error('cash_formatted')
+                                                                    <span class="has-error">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 mb-1">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="change_formatted">Total Kembalian</label>
+                                                                <input type="text" class="form-control underlined" name="change_formatted" id="change_formatted" readonly>
+                                                                <input type="hidden" name="change" id="change" value="{{old('change')}}">
+                                                                @error('change_formatted')
+                                                                    <span class="has-error">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div name="payment_form_credit" id="payment_form_credit">
+                                                    {{-- <div class="col-12 mb-1">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Jumlah Pembayaran</label>
+                                                            <input type="date" class="form-control boxed" id='transaction_date' name="transaction_date">
+                                                            @error('transaction_date')
+                                                                <span class="has-error">
+                                                                    {{ $message }}
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+                                                    </div> --}}
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 mt-3">
+                                                    <div class="form-group">
+                                                        <button class="btn btn-primary" style="width: 100%;" type="submit">Berikutnya</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -240,49 +279,73 @@
   </section>
 
   <script>
-    var transaction_date = "<?php echo"$transaction_date"?>"; 
-    var items = new Array();
+    var payment_type = 'Cash';
+    var tax_total_temp = 0;
+    var other_fees_temp = 0;
+    var total_amount = parseInt("{{$transaction->final_total}}");
+    var final_after_additional_cost_temp = 0;
+    var dp_po_temp = 0;
+    var paid_amount_temp = 0;
+    var change_temp = 0;
 
-    $('#submitTransactionButton').click(function(e){
-        e.preventDefault(); // Prevent the default action of the button
-        
-        if(document.getElementById("customer_name").value == ""){
-            alert("Nama Pelanggan Kosong! Silahkan masukkan nama pelanggan terlebih dahulu");
-        } else if(items.length <= 0){
-            alert("Item List Kosong! Silahkan tambahkan item terlebih dahulu");
-        } else{
-            if (confirm('Apakah anda yakin ingin menyimpan transaksi berikut ini?')) {
-                // Submit the form using jQuery
-                $('#transactionForm').submit();
-            } else {
-                // Do nothing!
-                console.log('Transaksi tidak jadi disubmit.');
-            }
-        }
-    });
-
-    //set variable for tanggal transaksi
-    document.getElementById("transaction_date").setAttribute('value', transaction_date);
-
-    $('#item_price_formatted').on('blur', function() {
-
-        // check if value is valid numeric
-        if($.isNumeric(this.value)){
-            //pass original value for next calculation
-            $('#item_price').val(this.value);
-
-            this.value = formatToCurrency(this.value);
+    function checkPaymentType (payment_type_params) {
+        payment_type_select = payment_type_params;
+        if(payment_type_select == 'Cash') {
+            $('#payment_form_cash').show();
+            $('#payment_form_credit').hide();
         } else {
-            alert("Harga tidak valid, silahkan cek kembali!");
-            $('#item_price_formatted').val("");
+            $('#payment_form_cash').hide();
+            $('#payment_form_credit').show();
         }
+        payment_type = payment_type_select;
+    }
+    //calculate tax amount
+    function calculateTax(tax_percentage = null) {
+        //use value from tax_percentage variable or tax_percentage input
+        var tax_percent = tax_percentage == null || tax_percentage == '' ? 0 : parseInt(tax_percentage);
+        tax_total_temp = (tax_percent/100) * total_amount;
 
-    });
+        $('#tax_total').val(roundUpToNearestHundred(tax_total_temp));
+        $('#tax_total_formatted').val(formatToCurrency(tax_total_temp.toString()));
+        calculateFinalTotalAmount()
+    }
+
+    function calculateFinalTotalAmount() {
+        //use value from other_fees variable or other_fees input
+        other_fees_temp = parseInt(other_fees_temp);
+        dp_po_temp = parseInt(dp_po_temp);
+        final_after_additional_cost_temp = (total_amount + tax_total_temp + other_fees_temp) - dp_po_temp;
+
+        //save to other input (hidden)
+        $('#other_fees').val(other_fees_temp);
+        $('#dp_po').val(dp_po_temp);
+        $('#final_after_tax_total').val(roundUpToNearestHundred(final_after_additional_cost_temp));
+
+        //set formatted other fees
+        $('#other_fees_formatted').val(formatToCurrency(other_fees_temp.toString()));
+        $('#final_after_tax_total_formatted').val(formatToCurrency(final_after_additional_cost_temp.toString()));
+        $('#dp_po_formatted').val(formatToCurrency(dp_po_temp.toString()));
+    }
+
+    function calculateChange() {
+        if(paid_amount_temp >= final_after_additional_cost_temp){
+            change_temp = paid_amount_temp - final_after_additional_cost_temp;
+            $('#change').val(roundUpToNearestHundred(change_temp));
+            $('#cash').val(roundUpToNearestHundred(paid_amount_temp));
+            $('#change_formatted').val(formatToCurrency(change_temp.toString()));
+            $('#cash_formatted').val(formatToCurrency(paid_amount_temp.toString()));
+        } else {
+            alert('Jumlah Pembayaran kurang, silahkan cek kembali!');
+        }
+    }
 
     function formatToCurrency(val){        
         const value = val.replace(/,/g, '');
 
-        var final_value = parseFloat(value).toLocaleString('en-US', {
+        init_value = parseFloat(value);
+        value_after_roundup = roundUpToNearestHundred(init_value);
+
+        var final_value = parseFloat(value_after_roundup).toLocaleString('en-US', {
             style: 'decimal',
             maximumFractionDigits: 2,
             minimumFractionDigits: 2
@@ -291,117 +354,49 @@
         return final_value;
     }
 
-    function calculateTotalPriceItem (total_price, disc_percent) {
-        var disc_amount = (total_price * disc_percent) / 100;
-        console.log(disc_amount);
-        return total_price - disc_amount;
-    }
-
-    function addItem(){
-        var item_code = document.getElementById("item_code").value;
-        var item_name = document.getElementById("item_name").value;
-        var item_quantity = document.getElementById("item_quantity").value;
-        var item_quantity_unit = document.getElementById("item_quantity_unit").value;
-        var disc_percent = document.getElementById("disc_percent").value;
-        var item_price = document.getElementById("item_price").value;
-
-        if( item_name != "" && item_quantity != "" && item_quantity_unit != "" && item_price != ""){
-            var item = new Object();
-            item.item_code = item_code;
-            item.item_name = item_name;
-            item.item_quantity = item_quantity;
-            item.item_quantity_unit = item_quantity_unit;
-            item.item_price = item_price;
-            item.disc_percent = disc_percent;
-            item.item_total_price = calculateTotalPriceItem(item_quantity * item_price, disc_percent);
-    
-            //push created item to items array
-            items.push(item);
-            console.log(items);
-            refreshTable();
-    
-            $('#item_code').val("");
-            $('#item_name').val("");
-            $('#item_quantity').val("");
-            $('#item_quantity_unit').val("");
-            $('#item_price_formatted').val("");
-            $('#item_price').val(0);
-            $('#disc_percent').val(0);
-        }else{
-            alert('Mohon isi semua kolom dengan tanda ( * ) terlebih dahulu');
-        }
-
-    }
-
-    function refreshTable(type = null, index = null){
-        //get table body of list item:
-        var tableRef = document.getElementById('items_table').getElementsByTagName('tbody')[0];
-        
-        // Clear existing content of tbody
-        tableRef.innerHTML = '';
-
-        //unset value for items
-        $('#itemsArr').val('');
-        // Flatten the multidimensional array into a string representation
-        var encripted_items = JSON.stringify(items);
-        // console.log(items);
-        // console.log(encripted_items);
-        $('#itemsArr').val(encripted_items);
-        console.log($('#itemsArr').val());
-
-        var subtotal_price = 0;
-        var total_disc_percent = 0;
-        var final_total_price = 0;
-        var final_item_qty = 0;
-        
-        for (let index = 0; index < items.length; index++){
-           
-            var formattedPrice = formatToCurrency(items[index]['item_price'].toString());
-            var formattedTotalPrice = formatToCurrency(items[index]['item_total_price'].toString());
-
-            // Define a unique ID for the th element
-            const thId = 'th_' + (index + 1);
-
-            //insert Row
-            tableRef.insertRow().innerHTML = 
-            "<th id='" + thId + "' scope='row'>" + (index + 1).toString()+ "</th>" + 
-            "<td>" +items[index]['item_code']+ "</td>"+
-            "<td>" +items[index]['item_name']+ "</td>"+
-            "<td>" +items[index]['item_quantity']+" "+items[index]['item_quantity_unit']+ "</td>"+
-            "<td>" +items[index]['disc_percent']+ " </td>"+
-            "<td>" +formattedPrice+ "</td>"+
-            "<td>" +formattedTotalPrice+ "</td>"+
-            "<td><a class='btn btn-danger' data-index='"+index+"' onclick='deleteItem(this)'><i class='fa fa-trash'></i></a></td>";
-
-            subtotal_price += (items[index]['item_price'] * items[index]['item_quantity']);
-            total_disc_percent += items[index]['disc_percent'];
-            final_total_price += items[index]['item_total_price'];
-            final_item_qty += parseInt(items[index]['item_quantity']);
-        }
-
-        var total_disc_amount = (subtotal_price * total_disc_percent) / 100;
-
-        $('#total_disc_percent').text(formatToCurrency(total_disc_percent.toString())+"%");
-        $('#total_disc_amount').text(formatToCurrency(total_disc_amount.toString()));
-        $('#sub_total_price').text(formatToCurrency(subtotal_price.toString()));
-        $('#total_price').text(formatToCurrency(final_total_price.toString()));
-        $('#total_items').text(formatToCurrency(final_item_qty.toString()));
-    }
-
-    function deleteItem(data){
-        if (confirm('Apakah anda yakin ingin menghapus item ini?')) {
-            // Delete it!
-            var index = parseInt(data.getAttribute('data-index'));
-            // Remove item at the specified index
-            removed_item = items[index];
-            items.splice(index, 1);
-            refreshTable();
-            alert("Item " + removed_item['item_name'] + " telah dihapus.");
+    function roundUpToNearestHundred(number) {
+        var remainder = number % 100;
+        if (remainder >= 50) {
+            return number + (100 - remainder);
         } else {
-            // Do nothing!
-            console.log('Item tidak jadi dihapus.');
+            return number - remainder;
         }
     }
+    
+    $('#payment_type').on('change', function() {
+        checkPaymentType(this.value); //
+    });
+
+    $('#tax_percentage').blur( function() {
+        calculateTax(this.value);
+    });
+
+    $('#other_fees_formatted').blur( function() {
+        other_fees_temp = this.value;
+        calculateFinalTotalAmount();
+    });
+
+    $('#dp_po_formatted').blur( function() {
+        dp_po_temp = this.value;
+        calculateFinalTotalAmount();
+    });
+
+    $('#cash_formatted').blur( function() {
+        paid_amount_temp = this.value;
+        calculateChange();
+    });
+
+    $(document).ready(function() {
+
+        //hide all form first
+        $('#payment_form_cash').hide();
+        $('#payment_form_credit').hide();
+
+        //set default form
+        $('#payment_type').val(payment_type);
+        checkPaymentType(payment_type);
+        calculateFinalTotalAmount();
+    });
 
 
   </script>

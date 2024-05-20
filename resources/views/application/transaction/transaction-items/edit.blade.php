@@ -28,79 +28,80 @@
         <section class="section">
             <div class="row">
                 <div class="col-12 d-flex">
-                    <div class="col-6">
-                        <form action="{{ route('application.transactions.store') }}" method="POST" style="margin-bottom: 0" id="transactionForm">
-                            {{ csrf_field() }}
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="card-title-body">
-                                        <h3 class="title">Data Transaksi</h3>
-                                    </div>
-                                    <section>
-                                        <input type="hidden" name="items" id="itemsArr">
-                                        <div class="row">
-                                            <div class="col-12 mb-1">
-                                                <div class="form-group">
-                                                    <label class="control-label">Nomor Transaksi</label>
-                                                    <input type="text" class="form-control boxed" name="transaction_number" value="{{ $transaction_number }}" placeholder="Masukkan Kode Sales Admin" readonly="readonly">
-                                                    @error('transaction_number')
-                                                        <span class="has-error">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-1">
-                                                <div class="form-group">
-                                                    <label class="control-label">Tanggal Transaksi</label>
-                                                    <input type="date" class="form-control boxed" id='transaction_date' name="transaction_date" value="{{ $transaction_date }}" readonly="readonly">
-                                                    @error('transaction_date')
-                                                        <span class="has-error">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-1">
-                                                <div class="form-group">
-                                                    <label class="control-label">Kode Sales</label>
-                                                    <input type="text" class="form-control boxed" name="sales_code" value="{{ old('sales_code') }}" placeholder="Masukkan Kode Sales Admin">
-                                                    @error('sales_code')
-                                                        <span class="has-error">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-1">
-                                                <div class="form-group">
-                                                    <label class="control-label">Nama Pelanggan <sup style='color: red'>*</sup></label>
-                                                    <input type="text" class="form-control underlined" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" placeholder="Masukkan Nama Pelanggan" required>
-                                                    @error('customer_name')
-                                                        <span class="has-error">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12 mb-1">
-                                                <div class="form-group">
-                                                    <label class="control-label">Alamat Pelanggan </label>
-                                                    <input type="text" class="form-control underlined" name="customer_address" value="{{ old('customer_address') }}" placeholder="Masukkan Alamat Pelanggan">
-                                                    @error('customer_address')
-                                                        <span class="has-error">
-                                                            {{ $message }}
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
+                    <div class="col-12">
+                            <form action="{{ route('application.transactions.update') }}" method="POST" style="margin-bottom: 0" id="transactionForm">
+                                {{ csrf_field() }}
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-title-body">
+                                            <h3 class="title">Data Transaksi</h3>
                                         </div>
-                                    </section>
+                                        <section>
+                                            <input type="hidden" name="items" id="itemsArr">
+                                            <input type="hidden" name="dp_po">
+                                            <div class="row">
+                                                <div class="col-12 mb-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Nomor Transaksi</label>
+                                                        <input type="text" class="form-control boxed" name="transaction_number" value="{{ $transaction_number }}" placeholder="Masukkan Kode Sales Admin" readonly="readonly">
+                                                        @error('transaction_number')
+                                                            <span class="has-error">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mb-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tanggal Transaksi</label>
+                                                        <input type="date" class="form-control boxed" id='transaction_date' name="transaction_date" value="{{ $transaction_date }}" readonly="readonly">
+                                                        @error('transaction_date')
+                                                            <span class="has-error">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mb-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Kode Sales</label>
+                                                        <input type="text" class="form-control boxed" name="sales_code" value="{{ old('sales_code') }}" placeholder="Masukkan Kode Sales Admin">
+                                                        @error('sales_code')
+                                                            <span class="has-error">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mb-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Nama Pelanggan <sup style='color: red'>*</sup></label>
+                                                        <input type="text" class="form-control underlined" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" placeholder="Masukkan Nama Pelanggan" required>
+                                                        @error('customer_name')
+                                                            <span class="has-error">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 mb-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Alamat Pelanggan </label>
+                                                        <input type="text" class="form-control underlined" name="customer_address" value="{{ old('customer_address') }}" placeholder="Masukkan Alamat Pelanggan">
+                                                        @error('customer_address')
+                                                            <span class="has-error">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
                     </div>
-                    <div class="col-6">
+                    {{-- <div class="col-6">
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-title-body">
@@ -134,7 +135,6 @@
                                                     <option value="Meter">Meter</option>
                                                     <option value="Pcs">Pcs</option>
                                                 </select>
-                                                {{-- <input type="text" class="form-control underlined" name="item_quantity_unit" id="item_quantity_unit" placeholder="Masukkan Satuan item" required> --}}
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-12 mb-1">
@@ -146,8 +146,9 @@
                                         </div>
                                         <div class="col-md-6 col-sm-12 mb-1">
                                             <div class="form-group">
-                                                <label class="control-label">Diskon (%)</label>
-                                                <input type="number" class="form-control underlined" name="disc_percent" id="disc_percent" value="0" placeholder="Masukkan Potongan Harga (%)">
+                                                <label class="control-label">Potongan Harga (%)</label>
+                                                <input type="number" class="form-control underlined" name="disc_percent" id="disc_percent" placeholder="Masukkan Potongan Harga (%)">
+                                                <input type="hidden" name="item_price" id="item_price">
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-12 mt-3">
@@ -160,7 +161,7 @@
 
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="col-12">
                     <div class="card">
@@ -185,7 +186,7 @@
                                                 Jumlah Satuan Item
                                             </th>
                                             <th>
-                                                Diskon (%)
+                                                Potongan (%)
                                             </th>
                                             <th>
                                                 Harga Item
@@ -211,7 +212,7 @@
                                         </tr>
                                         <tr>
                                             <td></td>
-                                            <td colspan="2" style="text-align: right !important;">Diskon</td>
+                                            <td colspan="2" style="text-align: right !important;">Potongan</td>
                                             <td id="total_disc_percent"></td>
                                             <td id="total_disc_amount"></td>
                                             <td style="text-align: right !important;">Total</td>
@@ -240,7 +241,6 @@
   <script>
     var transaction_date = "<?php echo"$transaction_date"?>"; 
     var items = new Array();
-    var total_disc_amount = 0;
 
     $('#submitTransactionButton').click(function(e){
         e.preventDefault(); // Prevent the default action of the button
@@ -291,8 +291,7 @@
     }
 
     function calculateTotalPriceItem (total_price, disc_percent) {
-        // var disc_amount = (total_price * disc_percent) / 100;
-        var disc_amount = (disc_percent / 100) * total_price;
+        var disc_amount = (total_price * disc_percent) / 100;
         console.log(disc_amount);
         return total_price - disc_amount;
     }
@@ -304,7 +303,6 @@
         var item_quantity_unit = document.getElementById("item_quantity_unit").value;
         var disc_percent = document.getElementById("disc_percent").value;
         var item_price = document.getElementById("item_price").value;
-        var actual_price = item_price;
 
         if( item_name != "" && item_quantity != "" && item_quantity_unit != "" && item_price != ""){
             var item = new Object();
@@ -323,9 +321,9 @@
     
             $('#item_code').val("");
             $('#item_name').val("");
-            $('#item_quantity').val(0);
-            $('#item_quantity_unit').val(0);
-            $('#item_price_formatted').val(0);
+            $('#item_quantity').val("");
+            $('#item_quantity_unit').val("");
+            $('#item_price_formatted').val("");
             $('#item_price').val(0);
             $('#disc_percent').val(0);
         }else{
@@ -375,17 +373,12 @@
             "<td><a class='btn btn-danger' data-index='"+index+"' onclick='deleteItem(this)'><i class='fa fa-trash'></i></a></td>";
 
             subtotal_price += (items[index]['item_price'] * items[index]['item_quantity']);
-            total_disc_percent += parseInt(items[index]['disc_percent']);
+            total_disc_percent += items[index]['disc_percent'];
             final_total_price += items[index]['item_total_price'];
             final_item_qty += parseInt(items[index]['item_quantity']);
-
-            const discPercent = items[index]['disc_percent'];
-
-            if (discPercent !== null && discPercent !== '0' && discPercent !== 0) {
-                console.log(discPercent);
-                total_disc_amount = ((items[index]['item_price'] * items[index]['item_quantity']) * total_disc_percent) / 100;
-            }
         }
+
+        var total_disc_amount = (subtotal_price * total_disc_percent) / 100;
 
         $('#total_disc_percent').text(formatToCurrency(total_disc_percent.toString())+"%");
         $('#total_disc_amount').text(formatToCurrency(total_disc_amount.toString()));

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Application\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
+use App\Services\DashboardServices;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -15,19 +16,12 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $vehicleNames = [];
-        $vehicleOrderCount = [];
-        // $vehicles = Vehicle::withCount('orderVehicles')->get();
-
-        // foreach ($vehicles as $vehicle) {
-        //     $vehicleNames[] = $vehicle->registration_no.' - '.$vehicle->name;
-        //     $vehicleOrderCount[] = $vehicle->order_vehicles_count;
-        // }
-
+        $dashboardServices = new DashboardServices();
+        $dashboardData = $dashboardServices->getDashboardData();
+        
         return view('application.dashboard',[
             //'vehicle chart data
-            'vehicleNames' => json_encode($vehicleNames),
-            'vehicleOrderCount' => json_encode($vehicleOrderCount),
+            'data' => json_encode($dashboardData),
             'active_page' => 'dashboard',
         ]);
     }

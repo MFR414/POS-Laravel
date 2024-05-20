@@ -15,4 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('transactions', TransactionController::class);
-Route::get('transactions/{transaction}/payment', [TransactionController::class, 'showPaymentForm'])->name('transactions.payment');
+Route::prefix('transactions.payment')->name('transactions.payment.')->group(function () {
+    Route::get('transactions/{transaction}/payment', [TransactionController::class, 'showPaymentForm'])->name('form');
+    Route::post('transactions/{transaction}/payment/submit', [TransactionController::class, 'submitPayment'])->name('submit');    
+});
+

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('item_quantity_unit', 100);
             $table->float('item_price');
             $table->float('item_total_price');
+            $table->float('disc_percent')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

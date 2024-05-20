@@ -32,7 +32,9 @@ return new class extends Migration
             $table->bigInteger('debit_card')->nullable();
             $table->bigInteger('credit_card')->nullable();
             $table->bigInteger('return')->nullable();
-            $table->boolean('is_paid')->default(false);
+            $table->string('transaction_status', 100)->default('Belum Dibayar');
+            $table->string('payment_type', 100)->nullable();
+            $table->bigInteger('final_total_after_additional')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
