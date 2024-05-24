@@ -62,29 +62,22 @@
                             <form action="{{ route('application.reports.index') }}" method="GET" style="margin-bottom: 0">
                                 <section>
                                     <div class="row">
-                                        <div class="col-sm-12 col-md-3">
+                                        {{-- <div class="col-sm-12 col-md-3">
                                             <div class="form-group" style='margin-bottom: 0'>
                                                 <label class="control-label" for="transaction_date">Tanggal transaksi</label>
                                                 <input type="date" class="form-control boxed" name="transaction_date" id="transaction_date" value="{{ $search_terms['transaction_date'] }}">
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-sm-12 col-md-3">
                                             <div class="form-group" style='margin-bottom: 0'>
                                                 <label class="control-label">Tahun</label>
                                                 <select class="form-control boxed" name="month" id="month" value="{{ $search_terms['transaction_month'] }}">
                                                     <option value="">Pilih Bulan</option>
-                                                    <option value="1">Januari</option>
-                                                    <option value="2">Februari</option>
-                                                    <option value="3">Maret</option>
-                                                    <option value="4">April</option>
-                                                    <option value="5">Mei</option>
-                                                    <option value="6">Juni</option>
-                                                    <option value="7">Juli</option>
-                                                    <option value="8">Agustus</option>
-                                                    <option value="9">September</option>
-                                                    <option value="10">Oktober</option>
-                                                    <option value="11">November</option>
-                                                    <option value="12">Desember</option>
+                                                    @for ($i = 1; $i <= 12; $i++)
+                                                        <option value="{{ $i }}" {{ (isset($search_terms['transaction_month']) && $search_terms['transaction_month'] == $i) ? 'selected' : '' }}>
+                                                            {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                                                        </option>
+                                                    @endfor
                                                 </select>
                                             </div>
                                         </div>
@@ -93,29 +86,24 @@
                                                 <label class="control-label">Tahun</label>
                                                 <select class="form-control boxed" name="year" id="year" value="{{ $search_terms['transaction_year'] }}">
                                                     <option value="">Pilih Tahun</option>
-                                                    <option value="2024">2024</option>
-                                                    <option value="2025">2025</option>
-                                                    <option value="2026">2026</option>
-                                                    <option value="2027">2027</option>
-                                                    <option value="2028">2028</option>
-                                                    <option value="2029">2029</option>
-                                                    <option value="2030">2030</option>
-                                                    <option value="2031">2031</option>
-                                                    <option value="2032">2032</option>
-                                                    <option value="2033">2033</option>
-                                                    <option value="2034">2034</option>
-                                                    <option value="2035">2035</option>
-                                                    <option value="2036">2036</option>
-                                                    <option value="2037">2037</option>
-                                                    <option value="2038">2038</option>
-                                                    <option value="2039">2039</option>
-                                                    <option value="2040">2040</option>
+                                                    @for ($i = 2024; $i <= 2150; $i++)
+                                                        <option value="{{ $i }}" {{ (isset($search_terms['transaction_year']) && $search_terms['transaction_year'] == $i) ? 'selected' : '' }}>
+                                                            {{ $i }}
+                                                        </option>
+                                                    @endfor
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-3">
-                                            <button class="btn btn-primary" style="width: 100%;margin-top: 24px; height: 38px">Cari Transaksi</button>
+                                            <button type="submit" class="btn btn-primary" style="width: 100%;margin-top: 24px; height: 38px">Cari Transaksi</button>
                                         </div>
+                                        <form action="{{ route('application.reports.index') }}" method="GET" style="margin-bottom: 0">
+                                            <input type="hidden" name="month" value="{{ request('month') }}">
+                                            <input type="hidden" name="year" value="{{ request('year') }}">
+                                            <div class="col-sm-12 col-md-3">
+                                                <button type="submit" class="btn btn-primary" style="width: 100%;margin-top: 24px; height: 38px">Cetak Laporan</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </section>
                             </form>
@@ -178,15 +166,9 @@
                                     @endif
                                 </td>
                                 <td class="project-actions text-right" style="display: flex; gap:5px;">
-                                    {{-- @if($transaction->transaction_status == "Belum Dibayar")
-                                        <a class="btn btn-primary btn-sm" style="padding-top: 8px;" href="{{ route('application.transactions.payment.form', $transaction)}}">
-                                            <i class="fas fa-money"></i> Payment Transaction
-                                        </a>
-                                    @else
-                                        <a class="btn btn-info btn-sm" style="padding-top: 8px;" href="{{ route('application.invoices.check', $transaction)}}">
-                                            <i class="fas fa-print"></i> generate invoice
-                                        </a>
-                                    @endif --}}
+                                    <a class="btn btn-success btn-sm" style="padding-top: 8px;" href="{{ route('application.invoices.generate', $transaction)}}">
+                                        <i class="fas fa-print"></i> Pembuatan Invoice
+                                    </a>
                                     {{-- <form method="POST" action="{{ route('application.users.admins.destroy', $transaction) }}">
                                         @csrf
                                         <input name="_method" type="hidden" value="DELETE">

@@ -154,7 +154,7 @@
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
                                     @else
-                                        <a class="btn btn-success btn-sm" style="padding-top: 8px;" href="{{ route('application.invoices.check', $transaction)}}">
+                                        <a class="btn btn-success btn-sm" style="padding-top: 8px;" href="{{ route('application.invoices.generate', $transaction)}}">
                                             <i class="fas fa-print"></i> Pembuatan Invoice
                                         </a>
                                     @endif

@@ -62,15 +62,15 @@
                                                         <td id="total_items">{{$transaction->item_total}}</td>
                                                         <td>Sub Total</td>
                                                         <td>:</td>
-                                                        <td id="sub_total_price">{{$transaction->formatted_subtotal}}</td>
+                                                        <td id="sub_total_price">Rp {{$transaction->formatted_subtotal}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>Potongan</td>
                                                         <td>:</td>
-                                                        <td id="total_disc_amount">{{$transaction->formatted_discount_total}}</td>
+                                                        <td id="total_disc_amount">Rp {{$transaction->formatted_discount_total}}</td>
                                                         <td>Total</td>
                                                         <td>:</td>
-                                                        <td id="total_price">{{$transaction->formatted_final_total}}</td>
+                                                        <td id="total_price">Rp {{$transaction->formatted_final_total}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -314,12 +314,12 @@
         //use value from other_fees variable or other_fees input
         other_fees_temp = parseInt(other_fees_temp);
         dp_po_temp = parseInt(dp_po_temp);
-        final_after_additional_cost_temp = (total_amount + tax_total_temp + other_fees_temp) - dp_po_temp;
+        final_after_additional_cost_temp = roundUpToNearestHundred((total_amount + tax_total_temp + other_fees_temp) - dp_po_temp);
 
         //save to other input (hidden)
         $('#other_fees').val(other_fees_temp);
         $('#dp_po').val(dp_po_temp);
-        $('#final_after_tax_total').val(roundUpToNearestHundred(final_after_additional_cost_temp));
+        $('#final_after_tax_total').val(final_after_additional_cost_temp);
 
         //set formatted other fees
         $('#other_fees_formatted').val(formatToCurrency(other_fees_temp.toString()));

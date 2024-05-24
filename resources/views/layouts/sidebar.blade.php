@@ -32,28 +32,28 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-            <li class="nav-item">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+              <li class="nav-item">
                 <a href="{{ route('application.dashboard') }}" class="nav-link {{ ( !empty($active_page) && $active_page == 'dashboard') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-home"></i>
                     <p>Dashboard</p>
                 </a>
-            </li>
-            
-            @if( auth()->user()->hasAnyRole(['Admin','Super Admin']))
-                <li class="nav-item">
-                    <a href="{{ route('application.transactions.create') }}" class="nav-link {{ ( !empty($active_page) && $active_page == 'transactions-create') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-calculator"></i>
-                        <p>Buat Transaksi</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{ route('application.transactions.index') }}" class="nav-link {{ ( !empty($active_page) && $active_page == 'transactions') ? 'active' : '' }}">
-                      <i class="nav-icon fas fa-balance-scale"></i>
-                      <p>Transaksi</p>
+              </li>
+              <li class="nav-item">
+                  <a href="{{ route('application.transactions.create') }}" class="nav-link {{ ( !empty($active_page) && $active_page == 'transactions-create') ? 'active' : '' }}">
+                      <i class="nav-icon fas fa-calculator"></i>
+                      <p>Buat Transaksi</p>
                   </a>
-                </li>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('application.transactions.index') }}" class="nav-link {{ ( !empty($active_page) && $active_page == 'transactions') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-balance-scale"></i>
+                    <p>Transaksi</p>
+                </a>
+              </li>
+              
+            @if( auth()->user()->hasAnyRole(['Admin','Super Admin','Owner User']))
                 <li class="nav-item">
                   <a href="{{ route('application.reports.index') }}" class="nav-link {{ ( !empty($active_page) && $active_page == 'reports') ? 'active' : '' }}"">
                     <i class="nav-icon fa fa-list"></i>
@@ -68,20 +68,16 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        @if( auth()->user()->hasAnyRole(['Super Admin','Admin']))
-                            <li class="nav-item">
-                                <a class="nav-link {{ ( !empty($active_subpage) && $active_subpage == 'admins') ? 'active' : '' }}" href="{{ route('application.users.admins.index') }}"> <i class="nav-icon fa fa-user"></i>
-                                    <p>Admin</p>
-                                </a>
-                            </li>
-                            @if( auth()->user()->hasAnyRole(['Super Admin']))
-                                <li class="nav-item">
-                                    <a class="nav-link {{ ( !empty($active_subpage) && $active_subpage == 'cashiers') ? 'active' : '' }}" href="{{ route('application.users.cashiers.index') }}"> <i class="nav-icon fa fa-user"></i>
-                                        <p>Kasir</p>
-                                    </a>
-                                </li>
-                            @endif
-                        @endif
+                      <li class="nav-item">
+                          <a class="nav-link {{ ( !empty($active_subpage) && $active_subpage == 'admins') ? 'active' : '' }}" href="{{ route('application.users.admins.index') }}"> <i class="nav-icon fa fa-user"></i>
+                              <p>Admin</p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link {{ ( !empty($active_subpage) && $active_subpage == 'cashiers') ? 'active' : '' }}" href="{{ route('application.users.cashiers.index') }}"> <i class="nav-icon fa fa-user"></i>
+                              <p>Kasir</p>
+                          </a>
+                      </li>
                     </ul>
                 <li>
             @endif

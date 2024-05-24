@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('sales_code', 100)->nullable();
             $table->string('customer_name', 100)->nullable();
             $table->string('customer_address', 100)->nullable();
-            $table->bigInteger('item_total')->nullable();
+            $table->float('item_total')->nullable();
             $table->float('discount_percentage')->nullable();
             $table->bigInteger('discount_total')->nullable();
             $table->float('tax_percentage')->nullable();
@@ -35,6 +35,8 @@ return new class extends Migration
             $table->string('transaction_status', 100)->default('Belum Dibayar');
             $table->string('payment_type', 100)->nullable();
             $table->bigInteger('final_total_after_additional')->nullable();
+            $table->string('creator', 100)->nullable();
+            $table->string('invoice_filename', 150)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -17,7 +17,14 @@ class DashboardController extends Controller
     public function index()
     {
         $dashboardServices = new DashboardServices();
-        $dashboardData = $dashboardServices->getDashboardData();
+
+        if( auth()->user()->hasAnyRole('Admin','Super Admin','Owner User')){
+            $dashboardData = $dashboardServices->getDashboardData();
+        } else {
+            $dashboardData = $dashboardServices->getMonthlyDashboardData();
+        }
+
+        // dd($dashboardData);
         
         return view('application.dashboard',[
             //'vehicle chart data

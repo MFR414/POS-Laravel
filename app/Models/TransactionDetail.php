@@ -44,7 +44,7 @@ class TransactionDetail extends Model
      */
     public function getFormattedItemPriceAttribute()
     { 
-        return 'Rp '.number_format($this->item_price, 0, '.', ',');
+        return number_format($this->item_price, 0, ',', '.');
     }
 
     /**

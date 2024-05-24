@@ -93,6 +93,7 @@ class TransactionServices
                 $discount_total = 0;
                 $subtotal = 0;
                 $discount_percentage = 0;
+                $sum_total_item = 0;
                 
                 // Create new transaction object
                 $transaction = Transaction::where('transaction_number',$request->transaction_number)->first();
@@ -106,7 +107,7 @@ class TransactionServices
                 $transaction->sales_code = $request->sales_code;
                 $transaction->customer_name = $request->customer_name;
                 $transaction->customer_address = $request->customer_address;
-                $transaction->item_total = count($items);
+                $transaction->creator = auth()->user()->username;
                 
                 foreach($items as $item){
                     
@@ -124,6 +125,7 @@ class TransactionServices
                     $discount_percentage += floatval($item->disc_percent);                    
                     $subtotal +=  (intval($item->item_quantity) * intval($item->item_price));
                     $discount_total += ($subtotal * floatval($item->disc_percent) / 100);
+                    $sum_total_item += $item->item_quantity;
                     
                     $transactionDetail->save();
                 }
@@ -133,6 +135,7 @@ class TransactionServices
                 $transaction->subtotal = intval($subtotal);
                 $transaction->final_total = intval($subtotal - $discount_total);
                 $transaction->transaction_status = "Belum Dibayar";
+                $transaction->item_total = $sum_total_item;
 				// $transaction->details = $items;
 
                 $transaction->save(); 
@@ -159,6 +162,7 @@ class TransactionServices
                 $discount_total = 0;
                 $subtotal = 0;
                 $discount_percentage = 0;
+                $sum_total_item = 0;
 
                 if(!empty($request->deleted_items)) {
                     $deletedItemsIds = json_decode($request->deleted_items);
@@ -174,7 +178,6 @@ class TransactionServices
                 $transaction->sales_code = $request->sales_code;
                 $transaction->customer_name = $request->customer_name;
                 $transaction->customer_address = $request->customer_address;
-                $transaction->item_total = count($items);
 
             
                 foreach($items as $item){
@@ -200,7 +203,8 @@ class TransactionServices
                     $discount_percentage += floatval($item->disc_percent);                    
                     $subtotal +=  (intval($item->item_quantity) * intval($item->item_price));
                     $discount_total += ((intval($item->item_quantity) * intval($item->item_price)) * floatval($item->disc_percent) / 100);
-                    
+                    $sum_total_item += $item->item_quantity;
+
                     $transactionDetail->save();
                 }
                 
@@ -209,6 +213,7 @@ class TransactionServices
                 $transaction->subtotal = intval($subtotal);
                 $transaction->final_total = intval($subtotal - $discount_total);
                 $transaction->transaction_status = "Belum Dibayar";
+                $transaction->item_total = (float) $sum_total_item;
 				// $transaction->details = $items;
 
                 $transaction->save(); 
@@ -232,7 +237,7 @@ class TransactionServices
 				$transaction->tax_percentage = (float) $request->tax_percentage;
 				$transaction->tax_total = (int) $request->tax_total;
 				$transaction->payment_type = $request->payment_type;
-				$transaction->final_total_after_additional = (int) $transaction->final_total_after_additional;
+				$transaction->final_total_after_additional = (int) $request->final_after_tax_total;
 			} 
 			$transaction->save();
 

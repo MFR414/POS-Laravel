@@ -176,6 +176,8 @@ class TransactionController extends Controller
 
         $this->validate($request,$validation_rules);
 
+        // dd($request->all());
+
         $transaction = Transaction::where('transaction_number',$request->transaction_number)->first();
         if(empty($transaction)){
             $response['success'] = 'false';
